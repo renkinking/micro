@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>デジタルマイクロニッチ戦略</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --white: #F5F0E8;
+    --gold: #C9A84C;
+    --gold-light: #E8CC7A;
+    --gold-dark: #8B6914;
+    --red: #C0392B;
+    --gray: #1A1A1A;
+    --gray-mid: #2D2D2D;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Noto Sans JP', sans-serif;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* TICKER */
+  .ticker-wrap { overflow: hidden; background: var(--gold); padding: 12px 0; }
+  .ticker { display: flex; white-space: nowrap; animation: ticker 22s linear infinite; }
+  .ticker-item { color: var(--black); font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 0.15em; padding: 0 40px; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 80px 24px 100px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,168,76,0.12) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(192,57,43,0.06) 0%, transparent 60%);
+  }
+  .era-label {
+    font-family: 'Noto Serif JP', serif; font-size: 13px; letter-spacing: 0.3em;
+    color: var(--gold); margin-bottom: 36px;
+    opacity: 0; animation: fadeUp 0.8s ease forwards 0.2s;
+    border: 1px solid rgba(201,168,76,0.3); padding: 8px 24px; display: inline-block;
+  }
+  .hero-sub {
+    font-family: 'Noto Serif JP', serif; font-size: clamp(14px, 2vw, 18px);
+    color: rgba(245,240,232,0.65); letter-spacing: 0.15em; margin-bottom: 20px;
+    opacity: 0; animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+  .hero-title {
+    font-family: 'Noto Serif JP', serif; font-size: clamp(38px, 7vw, 88px);
+    font-weight: 900; line-height: 1.15; margin-bottom: 40px;
+    opacity: 0; animation: fadeUp 0.9s ease forwards 0.6s;
+    background: linear-gradient(135deg, var(--white) 30%, var(--gold-light) 70%, var(--gold) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-copy {
+    font-size: clamp(18px, 3vw, 28px); font-weight: 700; color: var(--white);
+    max-width: 720px; line-height: 1.9; margin-bottom: 20px;
+    opacity: 0; animation: fadeUp 0.8s ease forwards 0.9s;
+  }
+  .hero-copy .highlight { color: var(--gold-light); font-family: 'Noto Serif JP', serif; }
+  .hero-copy .amount {
+    font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 9vw, 108px);
+    color: var(--gold); display: block; line-height: 1; letter-spacing: 0.03em;
+    text-shadow: 0 0 80px rgba(201,168,76,0.45); margin: 12px 0;
+  }
+  .hero-device {
+    font-size: clamp(13px, 1.8vw, 16px); color: rgba(245,240,232,0.45); margin-bottom: 56px;
+    opacity: 0; animation: fadeUp 0.8s ease forwards 1.1s;
+    letter-spacing: 0.25em; font-family: 'Noto Serif JP', serif;
+  }
+  .checks-row {
+    display: flex; flex-wrap: wrap; gap: 14px 20px; justify-content: center;
+    max-width: 660px; margin-bottom: 60px;
+    opacity: 0; animation: fadeUp 0.8s ease forwards 1.3s;
+  }
+  .check-item {
+    display: flex; align-items: center; gap: 10px; font-size: 14px;
+    color: var(--white); background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.2); padding: 10px 18px; border-radius: 2px;
+  }
+  .check-icon { color: var(--gold); font-size: 16px; font-weight: 900; }
+  .cta-btn {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+    color: var(--black); font-family: 'Noto Serif JP', serif;
+    font-size: clamp(15px, 2.5vw, 20px); font-weight: 900;
+    padding: 22px 56px; border: none; cursor: pointer; letter-spacing: 0.08em;
+    transition: transform 0.2s, box-shadow 0.2s;
+    opacity: 0; animation: fadeUp 0.8s ease forwards 1.5s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 20px 60px rgba(201,168,76,0.38); }
+
+  .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dark), var(--gold), var(--gold-dark), transparent); }
+
+  /* VISUAL BLOCKS */
+  .visual-wrap { padding: 40px 24px 60px; }
+  .visual-block { width: 100%; max-width: 860px; margin: 0 auto; border-radius: 4px; overflow: hidden; }
+  .visual-block svg { display: block; width: 100%; height: auto; }
+
+  /* SECTIONS */
+  section { padding: 100px 24px; max-width: 900px; margin: 0 auto; }
+
+  .section-label { letter-spacing: 0.4em; color: var(--gold); font-family: 'Bebas Neue', sans-serif; font-size: 14px; margin-bottom: 24px; display: block; }
+
+  h2 { font-family: 'Noto Serif JP', serif; font-size: clamp(26px, 4vw, 44px); font-weight: 900; line-height: 1.55; margin-bottom: 40px; color: var(--white); }
+  h2 em { color: var(--gold-light); font-style: normal; }
+
+  p { font-size: clamp(14px, 1.8vw, 17px); line-height: 2.1; color: rgba(245,240,232,0.75); margin-bottom: 28px; }
+
+  /* PAIN */
+  .pain-section { background: var(--gray); padding: 100px 0; border-top: 1px solid rgba(201,168,76,0.1); border-bottom: 1px solid rgba(201,168,76,0.1); }
+  .pain-section > div { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  .pain-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 52px; }
+  .pain-list li { background: rgba(192,57,43,0.08); border-left: 3px solid var(--red); padding: 20px 22px; font-size: 15px; color: rgba(245,240,232,0.8); line-height: 1.85; }
+  .pain-list li::before { content: '✕  '; color: var(--red); font-weight: 900; }
+
+  .solution-box {
+    background: linear-gradient(135deg, rgba(201,168,76,0.06), rgba(201,168,76,0.02));
+    border: 1px solid rgba(201,168,76,0.25); padding: 52px 44px; margin: 52px 0; position: relative;
+  }
+  .solution-box::before {
+    content: '→'; font-family: 'Bebas Neue', sans-serif; font-size: 110px; color: var(--gold);
+    opacity: 0.07; position: absolute; top: 10px; right: 24px; line-height: 1;
+  }
+  .solution-box p { font-family: 'Noto Serif JP', serif; font-size: clamp(16px, 2vw, 21px); color: var(--white); font-weight: 700; line-height: 2.1; }
+
+  /* INCOME FLOW */
+  .income-flow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; margin: 56px 0; }
+  .income-node { background: var(--gray-mid); border: 1px solid rgba(201,168,76,0.3); padding: 20px 24px; text-align: center; min-width: 120px; }
+  .income-node .node-label { font-size: 11px; color: var(--gold); letter-spacing: 0.1em; margin-bottom: 8px; }
+  .income-node .node-text { font-size: 14px; font-weight: 700; color: var(--white); line-height: 1.7; }
+  .income-arrow { color: var(--gold); font-size: 22px; padding: 0 12px; }
+
+  /* BIG STATEMENT */
+  .big-statement { background: var(--gray); border-top: 1px solid rgba(201,168,76,0.1); border-bottom: 1px solid rgba(201,168,76,0.1); padding: 100px 24px; text-align: center; }
+  .big-statement .statement-text { font-family: 'Noto Serif JP', serif; font-size: clamp(22px, 4vw, 48px); font-weight: 900; max-width: 800px; margin: 0 auto 52px; line-height: 1.65; }
+  .vs { display: flex; justify-content: center; align-items: center; gap: 32px; margin: 0 auto; max-width: 600px; flex-wrap: wrap; }
+  .vs-item { text-align: center; flex: 1; min-width: 160px; }
+  .vs-bad { font-size: 15px; color: rgba(192,57,43,0.9); padding: 18px 20px; border: 1px solid rgba(192,57,43,0.3); margin-bottom: 14px; line-height: 1.8; }
+  .vs-good { font-size: 15px; color: rgba(201,168,76,0.9); padding: 18px 20px; border: 1px solid rgba(201,168,76,0.3); line-height: 1.8; font-weight: 700; }
+  .vs-divider { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: rgba(245,240,232,0.2); }
+
+  /* FEATURES */
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-top: 48px; }
+  .feature-card { background: var(--gray); border: 1px solid rgba(201,168,76,0.15); padding: 36px 28px; position: relative; overflow: hidden; transition: border-color 0.3s; }
+  .feature-card:hover { border-color: rgba(201,168,76,0.45); }
+  .feature-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold-dark), var(--gold)); }
+  .feature-num { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: rgba(201,168,76,0.12); line-height: 1; margin-bottom: 14px; }
+  .feature-title { font-family: 'Noto Serif JP', serif; font-size: 17px; font-weight: 700; color: var(--gold-light); margin-bottom: 14px; }
+  .feature-desc { font-size: 13px; color: rgba(245,240,232,0.6); line-height: 1.95; }
+
+  /* ASSET */
+  .asset-section { padding: 100px 24px; max-width: 900px; margin: 0 auto; }
+  .asset-numbers { display: flex; gap: 40px; flex-wrap: wrap; margin-bottom: 52px; }
+  .asset-number-item { flex: 1; min-width: 180px; border-top: 2px solid var(--gold); padding-top: 24px; }
+  .asset-number-item .big-num { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 8vw, 84px); color: var(--gold); line-height: 1; letter-spacing: 0.02em; }
+  .asset-number-item .num-label { font-family: 'Noto Serif JP', serif; font-size: 14px; color: rgba(245,240,232,0.55); margin-top: 10px; line-height: 1.7; }
+
+  /* FINAL CTA */
+  .final-cta { background: linear-gradient(135deg, #0D0D00, #1A1500, #0D0D00); padding: 120px 24px; text-align: center; position: relative; overflow: hidden; }
+  .final-cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.1) 0%, transparent 70%); }
+  .final-cta h2 { text-align: center; margin-bottom: 20px; }
+  .final-sub { font-size: clamp(14px, 2vw, 18px); color: rgba(245,240,232,0.5); margin-bottom: 56px; letter-spacing: 0.1em; font-family: 'Noto Serif JP', serif; line-height: 2.1; }
+  .final-cta-btn {
+    display: inline-block; background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+    color: var(--black); font-family: 'Noto Serif JP', serif; font-size: clamp(16px, 2.5vw, 22px);
+    font-weight: 900; padding: 26px 68px; letter-spacing: 0.1em; cursor: pointer; border: none;
+    position: relative; z-index: 1; transition: transform 0.2s, box-shadow 0.2s;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+  }
+  .final-cta-btn:hover { transform: translateY(-3px); box-shadow: 0 24px 64px rgba(201,168,76,0.42); }
+  .guarantee { display: inline-flex; align-items: center; gap: 14px; background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.2); padding: 18px 32px; margin-top: 36px; font-size: 14px; color: rgba(245,240,232,0.7); }
+  .guarantee .g-icon { font-size: 30px; }
+  .small-note { font-size: 12px; color: rgba(245,240,232,0.25); margin-top: 28px; letter-spacing: 0.1em; }
+
+  /* QUOTE */
+  .quote-block { border-left: 3px solid var(--gold); padding: 30px 34px; margin: 48px 0; background: rgba(201,168,76,0.04); }
+  .quote-block p { font-family: 'Noto Serif JP', serif; font-size: clamp(16px, 2vw, 20px); color: var(--white); font-weight: 700; line-height: 2.1; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 600px) {
+    .income-flow { flex-direction: column; align-items: stretch; }
+    .income-arrow { transform: rotate(90deg); text-align: center; }
+    .solution-box { padding: 28px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">デジタルマイクロニッチ戦略</span><span class="ticker-item">•</span>
+    <span class="ticker-item">半自動入金装置を所有する</span><span class="ticker-item">•</span>
+    <span class="ticker-item">デジタル資産を築く</span><span class="ticker-item">•</span>
+    <span class="ticker-item">オーナー型マルチインカム</span><span class="ticker-item">•</span>
+    <span class="ticker-item">デジタルマイクロニッチ戦略</span><span class="ticker-item">•</span>
+    <span class="ticker-item">半自動入金装置を所有する</span><span class="ticker-item">•</span>
+    <span class="ticker-item">デジタル資産を築く</span><span class="ticker-item">•</span>
+    <span class="ticker-item">オーナー型マルチインカム</span><span class="ticker-item">•</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="era-label">今の不安定・不透明な時代に</div>
+  <p class="hero-sub">小金持ちがコッソリ実践している、デジタルの秘密</p>
+  <h1 class="hero-title">デジタルマイクロニッチ戦略</h1>
+  <div class="hero-copy">
+    月<span class="amount">30〜100万円</span>の<span class="highlight">半自動入金装置</span>を<br>所有しませんか？
+  </div>
+  <p class="hero-device">顔出し不要・匿名・場所自由・AI半自動化</p>
+  <div class="checks-row">
+    <div class="check-item"><span class="check-icon">✓</span>トレンド・流行り関係なし</div>
+    <div class="check-item"><span class="check-icon">✓</span>匿名・顔出し不要</div>
+    <div class="check-item"><span class="check-icon">✓</span>複数収入源の確保</div>
+    <div class="check-item"><span class="check-icon">✓</span>AI・仕組みで半自動化</div>
+    <div class="check-item"><span class="check-icon">✓</span>手順・テンプレ完全完備</div>
+    <div class="check-item"><span class="check-icon">✓</span>ゼロリスクハイリターン</div>
+  </div>
+  <button class="cta-btn">今すぐ詳細を確認する →</button>
+</div>
+
+<div class="divider"></div>
+
+<!-- VISUAL 1: Digital network -->
+<div class="visual-wrap" style="background:var(--black);">
+  <div class="visual-block reveal">
+    <svg viewBox="0 0 860 240" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bg1" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#14120a"/>
+          <stop offset="100%" stop-color="#080808"/>
+        </radialGradient>
+        <filter id="glow1"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <rect width="860" height="240" fill="url(#bg1)"/>
+      <!-- Grid -->
+      <g stroke="rgba(201,168,76,0.06)" stroke-width="1">
+        <line x1="0" y1="60" x2="860" y2="60"/><line x1="0" y1="120" x2="860" y2="120"/><line x1="0" y1="180" x2="860" y2="180"/>
+        <line x1="172" y1="0" x2="172" y2="240"/><line x1="344" y1="0" x2="344" y2="240"/><line x1="516" y1="0" x2="516" y2="240"/><line x1="688" y1="0" x2="688" y2="240"/>
+      </g>
+      <!-- Lines -->
+      <g stroke="rgba(201,168,76,0.22)" stroke-width="1.5" fill="none">
+        <line x1="100" y1="120" x2="240" y2="75"/><line x1="100" y1="120" x2="240" y2="165"/>
+        <line x1="240" y1="75" x2="390" y2="55"/><line x1="240" y1="75" x2="390" y2="120"/>
+        <line x1="240" y1="165" x2="390" y2="120"/><line x1="240" y1="165" x2="390" y2="185"/>
+        <line x1="390" y1="55" x2="540" y2="75"/><line x1="390" y1="120" x2="540" y2="75"/><line x1="390" y1="120" x2="540" y2="165"/><line x1="390" y1="185" x2="540" y2="165"/>
+        <line x1="540" y1="75" x2="720" y2="120"/><line x1="540" y1="165" x2="720" y2="120"/>
+      </g>
+      <!-- X Hub -->
+      <circle cx="100" cy="120" r="30" fill="rgba(201,168,76,0.14)" stroke="#C9A84C" stroke-width="2" filter="url(#glow1)"/>
+      <text x="100" y="115" text-anchor="middle" fill="#C9A84C" font-family="'Bebas Neue',sans-serif" font-size="20" letter-spacing="1">X</text>
+      <text x="100" y="131" text-anchor="middle" fill="rgba(201,168,76,0.75)" font-family="sans-serif" font-size="9">集客</text>
+      <!-- Mid nodes -->
+      <circle cx="240" cy="75" r="22" fill="rgba(201,168,76,0.09)" stroke="rgba(201,168,76,0.55)" stroke-width="1.2"/>
+      <text x="240" y="71" text-anchor="middle" fill="#E8CC7A" font-family="sans-serif" font-size="9" font-weight="bold">コンテンツ</text>
+      <text x="240" y="83" text-anchor="middle" fill="#E8CC7A" font-family="sans-serif" font-size="9" font-weight="bold">販売</text>
+      <circle cx="240" cy="165" r="22" fill="rgba(201,168,76,0.09)" stroke="rgba(201,168,76,0.55)" stroke-width="1.2"/>
+      <text x="240" y="161" text-anchor="middle" fill="#E8CC7A" font-family="sans-serif" font-size="9" font-weight="bold">アフィリ</text>
+      <text x="240" y="173" text-anchor="middle" fill="#E8CC7A" font-family="sans-serif" font-size="9" font-weight="bold">エイト</text>
+      <!-- Right nodes -->
+      <circle cx="390" cy="55" r="19" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.45)" stroke-width="1"/>
+      <text x="390" y="52" text-anchor="middle" fill="rgba(245,240,232,0.7)" font-family="sans-serif" font-size="9">広告</text>
+      <text x="390" y="63" text-anchor="middle" fill="rgba(245,240,232,0.7)" font-family="sans-serif" font-size="9">収入</text>
+      <circle cx="390" cy="120" r="19" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.45)" stroke-width="1"/>
+      <text x="390" y="117" text-anchor="middle" fill="rgba(245,240,232,0.7)" font-family="sans-serif" font-size="9">PR</text>
+      <text x="390" y="128" text-anchor="middle" fill="rgba(245,240,232,0.7)" font-family="sans-serif" font-size="9">案件</text>
+      <circle cx="390" cy="185" r="19" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.45)" stroke-width="1"/>
+      <text x="390" y="182" text-anchor="middle" fill="rgba(245,240,232,0.7)" font-family="sans-serif" font-size="9">JV</text>
+      <text x="390" y="193" text-anchor="middle" fill="rgba(245,240,232,0.7)" font-family="sans-serif" font-size="9">協業</text>
+      <!-- Aggregation -->
+      <circle cx="540" cy="75" r="22" fill="rgba(201,168,76,0.11)" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
+      <text x="540" y="71" text-anchor="middle" fill="#E8CC7A" font-family="sans-serif" font-size="9" font-weight="bold">収益</text>
+      <text x="540" y="83" text-anchor="middle" fill="#E8CC7A" font-family="sans-serif" font-size="9" font-weight="bold">最大化</text>
+      <circle cx="540" cy="165" r="22" fill="rgba(201,168,76,0.11)" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
+      <text x="540" y="161" text-anchor="middle" fill="#E8CC7A" font-family="sans-serif" font-size="9" font-weight="bold">複利</text>
+      <text x="540" y="173" text-anchor="middle" fill="#E8CC7A" font-family="sans-serif" font-size="9" font-weight="bold">積上げ</text>
+      <!-- EXIT -->
+      <circle cx="720" cy="120" r="34" fill="rgba(201,168,76,0.16)" stroke="#C9A84C" stroke-width="2" filter="url(#glow1)"/>
+      <text x="720" y="115" text-anchor="middle" fill="#C9A84C" font-family="'Noto Serif JP',serif" font-size="12" font-weight="bold">売却</text>
+      <text x="720" y="131" text-anchor="middle" fill="rgba(201,168,76,0.75)" font-family="'Bebas Neue',sans-serif" font-size="11" letter-spacing="1">EXIT</text>
+      <!-- Stage labels -->
+      <text x="100" y="226" text-anchor="middle" fill="rgba(201,168,76,0.35)" font-family="sans-serif" font-size="8.5" letter-spacing="1">SEED</text>
+      <text x="240" y="226" text-anchor="middle" fill="rgba(201,168,76,0.35)" font-family="sans-serif" font-size="8.5" letter-spacing="1">GROW</text>
+      <text x="390" y="226" text-anchor="middle" fill="rgba(201,168,76,0.35)" font-family="sans-serif" font-size="8.5" letter-spacing="1">EXPAND</text>
+      <text x="540" y="226" text-anchor="middle" fill="rgba(201,168,76,0.35)" font-family="sans-serif" font-size="8.5" letter-spacing="1">COMPOUND</text>
+      <text x="720" y="226" text-anchor="middle" fill="rgba(201,168,76,0.35)" font-family="sans-serif" font-size="8.5" letter-spacing="1">EXIT</text>
+    </svg>
+  </div>
+</div>
+
+<!-- PAIN -->
+<div class="pain-section">
+  <div>
+    <p class="section-label reveal">— こんな悩みはありませんか？</p>
+    <h2 class="reveal">AIの情報を追い続けて、<br><em>疲れていませんか？</em></h2>
+    <ul class="pain-list reveal">
+      <li>毎日変わるAIツールを追い続けるのに疲れた</li>
+      <li>会社の給料だけでは将来が不安で眠れない</li>
+      <li>副業を始めたいが顔出し・実名は絶対NG</li>
+      <li>SNS発信を試したが成果が出ずに諦めた</li>
+      <li>流行りのビジネスに乗っては消えるループ</li>
+      <li>時間も体力も限界、でも収入は変わらない</li>
+    </ul>
+    <div class="solution-box reveal">
+      <p>AIに仕事を奪われることを心配するより、<br><strong style="color:var(--gold-light)">AIを使う側</strong>になれば問題はすべて解決する。<br>そのための具体的な装置の作り方を、今から公開します。</p>
+    </div>
+  </div>
+</div>
+
+<!-- WHAT IS -->
+<section>
+  <p class="section-label reveal">— デジタルマイクロニッチ戦略とは</p>
+  <h2 class="reveal">Xを起点に、<em>デジタル上に<br>売上を上げる装置</em>を作る戦略</h2>
+  <p class="reveal">特定のニッチ領域でXアカウントを育て、そこからコンテンツ販売・アフィリエイト・広告収入・PR・ジョイントベンチャーへと収益を多層展開。最終的にはアカウント一式の売却まで——これがひとつの「デジタル資産」として機能します。</p>
+
+  <div class="income-flow reveal">
+    <div class="income-node"><div class="node-label">起点</div><div class="node-text">X集客</div></div>
+    <div class="income-arrow">→</div>
+    <div class="income-node"><div class="node-label">展開</div><div class="node-text">コンテンツ販売<br>アフィリエイト</div></div>
+    <div class="income-arrow">→</div>
+    <div class="income-node"><div class="node-label">拡大</div><div class="node-text">広告・PR<br>JV</div></div>
+    <div class="income-arrow">→</div>
+    <div class="income-node"><div class="node-label">出口</div><div class="node-text">アカウント<br>売却</div></div>
+  </div>
+
+  <div class="quote-block reveal">
+    <p>「デジタル不動産」を保有するイメージ。<br>ひとつ作ったら、また次を作る。<br>複数の入金装置が並ぶ——これが<strong style="color:var(--gold-light)">デジタルアセットポートフォリオ</strong>です。</p>
+  </div>
+</section>
+
+<!-- VISUAL 2: Portfolio bar chart -->
+<div class="visual-wrap" style="background:var(--black); padding-top:0;">
+  <div class="visual-block reveal">
+    <svg viewBox="0 0 860 210" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bar1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#8B6914"/><stop offset="100%" stop-color="#E8CC7A"/>
+        </linearGradient>
+        <linearGradient id="bar2" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#8B6914"/><stop offset="100%" stop-color="#C9A84C"/>
+        </linearGradient>
+        <linearGradient id="bar3" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#8B6914"/><stop offset="100%" stop-color="rgba(201,168,76,0.6)"/>
+        </linearGradient>
+      </defs>
+      <rect width="860" height="210" fill="#0e0e00"/>
+      <line x1="170" y1="20" x2="170" y2="175" stroke="rgba(201,168,76,0.18)" stroke-width="1"/>
+      <line x1="170" y1="175" x2="850" y2="175" stroke="rgba(201,168,76,0.18)" stroke-width="1"/>
+      <line x1="170" y1="125" x2="850" y2="125" stroke="rgba(201,168,76,0.06)" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="170" y1="75" x2="850" y2="75" stroke="rgba(201,168,76,0.06)" stroke-width="1" stroke-dasharray="4,4"/>
+
+      <text x="158" y="52" text-anchor="end" fill="rgba(201,168,76,0.55)" font-family="sans-serif" font-size="11">アカウント①</text>
+      <rect x="174" y="33" width="608" height="32" fill="url(#bar1)" rx="2"/>
+      <text x="792" y="55" fill="#E8CC7A" font-family="'Bebas Neue',sans-serif" font-size="17" letter-spacing="1">¥80万 / 月</text>
+
+      <text x="158" y="108" text-anchor="end" fill="rgba(201,168,76,0.55)" font-family="sans-serif" font-size="11">アカウント②</text>
+      <rect x="174" y="89" width="400" height="32" fill="url(#bar2)" rx="2"/>
+      <text x="584" y="111" fill="#C9A84C" font-family="'Bebas Neue',sans-serif" font-size="17" letter-spacing="1">¥50万 / 月</text>
+
+      <text x="158" y="163" text-anchor="end" fill="rgba(201,168,76,0.55)" font-family="sans-serif" font-size="11">アカウント③</text>
+      <rect x="174" y="144" width="220" height="32" fill="url(#bar3)" rx="2"/>
+      <text x="404" y="166" fill="rgba(201,168,76,0.65)" font-family="'Bebas Neue',sans-serif" font-size="17" letter-spacing="1">¥30万 / 月</text>
+
+      <text x="430" y="200" text-anchor="middle" fill="rgba(201,168,76,0.3)" font-family="sans-serif" font-size="9.5" letter-spacing="2">DIGITAL ASSET PORTFOLIO  —  複数の装置を並列運用する</text>
+    </svg>
+  </div>
+</div>
+
+<!-- BIG STATEMENT -->
+<div class="big-statement">
+  <p class="statement-text reveal">これは「稼ぎ方」ではなく、<br><em style="color:var(--gold-light)">「資産の作り方」</em>です。</p>
+  <div class="vs reveal">
+    <div class="vs-item">
+      <div class="vs-bad">労働収入<br>時間を売り続ける</div>
+      <div class="vs-bad">流行りに乗る<br>消耗ビジネス</div>
+    </div>
+    <div class="vs-divider">VS</div>
+    <div class="vs-item">
+      <div class="vs-good">ロイヤリティ収入<br>装置が稼ぎ続ける</div>
+      <div class="vs-good">ニッチ特化<br>トレンド不要</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section>
+  <p class="section-label reveal">— この戦略が選ばれる理由</p>
+  <h2 class="reveal">誰でも再現できる<em>6つの優位性</em></h2>
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <div class="feature-num">01</div>
+      <div class="feature-title">匿名・顔出し完全不要</div>
+      <div class="feature-desc">ニッチ領域の情報発信なので、個人の顔や名前は不要。プライバシーを守りながら資産を構築できます。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">02</div>
+      <div class="feature-title">トレンド依存ゼロ</div>
+      <div class="feature-desc">特定のマイクロニッチに特化するため、AIブームや流行り廃りに左右されない安定した収益構造を実現。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">03</div>
+      <div class="feature-title">AI・仕組みで半自動化</div>
+      <div class="feature-desc">投稿・集客・販売のプロセスをAIと自動化ツールで仕組み化。寝ている間にも入金が続く装置を構築します。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">04</div>
+      <div class="feature-title">マルチインカム設計</div>
+      <div class="feature-desc">コンテンツ販売・アフィリエイト・広告・PR・JV・売却と、ひとつのアカウントから多層的に収益化。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">05</div>
+      <div class="feature-title">複利収入源の確保</div>
+      <div class="feature-desc">デジタルアセットは作れば作るほど積み上がる。ひとつが軌道に乗ったら次を作る複利構造で資産が増殖。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">06</div>
+      <div class="feature-title">手順・型・テンプレ完備</div>
+      <div class="feature-desc">ゼロから再現できる完全なフォーマットを提供。センスや才能ではなく「型通りに実行する」だけで結果が出ます。</div>
+    </div>
+  </div>
+</section>
+
+<!-- VISUAL 3: Cycle diagram -->
+<div class="visual-wrap" style="background:var(--black); padding-top:0;">
+  <div class="visual-block reveal">
+    <svg viewBox="0 0 860 260" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bg3" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="#161400"/><stop offset="100%" stop-color="#080808"/>
+        </radialGradient>
+        <marker id="arr" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+          <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(201,168,76,0.65)"/>
+        </marker>
+      </defs>
+      <rect width="860" height="260" fill="url(#bg3)"/>
+      <!-- Outer dashed ring -->
+      <circle cx="430" cy="130" r="95" fill="none" stroke="rgba(201,168,76,0.08)" stroke-width="1" stroke-dasharray="5,5"/>
+      <!-- Center -->
+      <circle cx="430" cy="130" r="52" fill="rgba(201,168,76,0.09)" stroke="#C9A84C" stroke-width="1.5"/>
+      <text x="430" y="124" text-anchor="middle" fill="#C9A84C" font-family="'Noto Serif JP',serif" font-size="14" font-weight="bold">デジタル</text>
+      <text x="430" y="143" text-anchor="middle" fill="#C9A84C" font-family="'Noto Serif JP',serif" font-size="14" font-weight="bold">資産</text>
+      <!-- Step boxes -->
+      <rect x="340" y="14" width="180" height="44" fill="rgba(201,168,76,0.09)" stroke="rgba(201,168,76,0.4)" stroke-width="1" rx="2"/>
+      <text x="430" y="31" text-anchor="middle" fill="#E8CC7A" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="bold">① ニッチを選定する</text>
+      <text x="430" y="49" text-anchor="middle" fill="rgba(245,240,232,0.45)" font-family="sans-serif" font-size="9">マイクロニッチ特化</text>
+
+      <rect x="668" y="108" width="158" height="44" fill="rgba(201,168,76,0.09)" stroke="rgba(201,168,76,0.4)" stroke-width="1" rx="2"/>
+      <text x="747" y="125" text-anchor="middle" fill="#E8CC7A" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="bold">② Xで集客する</text>
+      <text x="747" y="143" text-anchor="middle" fill="rgba(245,240,232,0.45)" font-family="sans-serif" font-size="9">AI投稿・半自動化</text>
+
+      <rect x="340" y="202" width="180" height="44" fill="rgba(201,168,76,0.09)" stroke="rgba(201,168,76,0.4)" stroke-width="1" rx="2"/>
+      <text x="430" y="219" text-anchor="middle" fill="#E8CC7A" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="bold">③ 多層収益化する</text>
+      <text x="430" y="237" text-anchor="middle" fill="rgba(245,240,232,0.45)" font-family="sans-serif" font-size="9">販売・アフィリ・広告・JV</text>
+
+      <rect x="34" y="108" width="158" height="44" fill="rgba(201,168,76,0.09)" stroke="rgba(201,168,76,0.4)" stroke-width="1" rx="2"/>
+      <text x="113" y="125" text-anchor="middle" fill="#E8CC7A" font-family="'Noto Sans JP',sans-serif" font-size="11" font-weight="bold">④ 売却 or 複製</text>
+      <text x="113" y="143" text-anchor="middle" fill="rgba(245,240,232,0.45)" font-family="sans-serif" font-size="9">EXIT or ポートフォリオ拡張</text>
+
+      <!-- Arrows -->
+      <path d="M490,56 Q600,56 668,108" fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <path d="M668,152 Q668,224 520,246" fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <path d="M340,224 Q192,224 192,152" fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <path d="M192,108 Q240,36 340,36" fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- Caption -->
+      <text x="430" y="256" text-anchor="middle" fill="rgba(201,168,76,0.28)" font-family="sans-serif" font-size="9" letter-spacing="2">DIGITAL MICRO NICHE CYCLE  —  繰り返し複製できる装置のサイクル</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ASSET NUMBERS -->
+<div style="background:var(--gray); border-top:1px solid rgba(201,168,76,0.1); border-bottom:1px solid rgba(201,168,76,0.1); padding:100px 0;">
+  <div class="asset-section">
+    <p class="section-label reveal">— あなたが手にするもの</p>
+    <h2 class="reveal"><em>デジタルアセット</em>としての価値</h2>
+    <div class="asset-numbers reveal">
+      <div class="asset-number-item">
+        <div class="big-num">30〜100<span style="font-size:0.5em">万</span></div>
+        <div class="num-label">月間想定収益<br>（複数装置運用時）</div>
+      </div>
+      <div class="asset-number-item">
+        <div class="big-num">∞</div>
+        <div class="num-label">作れるアカウント数<br>（上限なし）</div>
+      </div>
+      <div class="asset-number-item">
+        <div class="big-num">0</div>
+        <div class="num-label">初期在庫・<br>仕入れリスク</div>
+      </div>
+    </div>
+    <p class="reveal" style="font-family:'Noto Serif JP',serif; font-size:clamp(15px,2vw,19px); color:rgba(245,240,232,0.8); line-height:2.2;">デジタルアセットは、物理的な不動産と違い、初期費用ゼロで複数保有できます。ひとつの装置が月30万を生み出し、それを3つ・5つと積み上げる。これが「小金持ちがコッソリ儲けている」仕組みの正体です。</p>
+  </div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="final-cta">
+  <p class="section-label reveal" style="color:var(--gold);">— 今すぐ始める</p>
+  <h2 class="reveal" style="text-align:center;">ゼロリスクハイリターン手法で<br><em>デジタル資産を築く全手順</em>を<br>今すぐ公開します。</h2>
+  <p class="final-sub reveal">手順・テンプレ・フォーマット・型、完全完備。<br>あとは「型通りに実行する」だけ。</p>
+  <button class="final-cta-btn reveal">今すぐ詳細を確認する →</button>
+  <div class="guarantee reveal">
+    <span class="g-icon">🛡</span>
+    <span>ゼロリスク設計 — 初期仕入れ不要・在庫なし・顔出し不要</span>
+  </div>
+  <p class="small-note reveal">※本戦略は情報提供を目的としており、収益を保証するものではありません。</p>
+</div>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
